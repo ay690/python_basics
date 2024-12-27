@@ -2,10 +2,13 @@ import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import os
+import requests
+import musicLibrary
 
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
+newsapi = "5acde251ae4045fb9def38f733735b25"
 
 
 def speak(text):
@@ -22,7 +25,28 @@ def processCommand(c):
         webbrowser.open("https://youtube.com")
     elif "open linkedin" in c.lower():
         webbrowser.open("https://linkedin.com")
-       
+    elif c.lower().startswith("play"):
+        song = c.lower().split(" ")[1]
+        link = musicLibrary.music[song]
+        webbrowser.open(link)
+    
+   
+    elif "news" in c.lower():
+        print(f"{newsapi}")
+        r = requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}")
+        if r.status_code == 200:
+            # Parse the JSON response
+            data = r.json()
+            print(data)
+            # Extract the articles
+            articles = data.get('articles', [])
+            
+            # Print the headlines
+            for article in articles:
+                speak(article['title'])
+
+
+        
 
 if __name__ == "__main__":
     speak("Initializing Jarvis....")
@@ -35,8 +59,8 @@ if __name__ == "__main__":
         try:
            with sr.Microphone() as source:
              print("Listening....")
-             audio = r.listen(source, timeout=2, phrase_time_limit=1)
-            # print("Sphinx thinks you said" + r.recognize_sphinx(audio))
+             audio = r.listen(source, timeout=10, phrase_time_limit=5)
+  
 
            word = r.recognize_google(audio)
         
