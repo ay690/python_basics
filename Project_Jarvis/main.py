@@ -2,8 +2,11 @@ import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import os
+import pygame
 import requests
 import musicLibrary
+from gtts import gTTS
+from groq import Groq
 
 
 recognizer = sr.Recognizer()
@@ -11,9 +14,52 @@ engine = pyttsx3.init()
 newsapi = "5acde251ae4045fb9def38f733735b25"
 
 
-def speak(text):
+def speak_old(text):
     engine.say(text)
     engine.runAndWait()
+
+def speak(text):
+    tts = gTTS(text)
+    tts.save('temp.mp3') 
+
+    # Initialize Pygame mixer
+    pygame.mixer.init()
+
+    # Load the MP3 file
+    pygame.mixer.music.load('temp.mp3')
+
+    # Play the MP3 file
+    pygame.mixer.music.play()
+
+    # Keep the program running until the music stops playing
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
+    
+    pygame.mixer.music.unload()
+    os.remove("temp.mp3") 
+
+
+def aiCommand(command):
+    client = Groq(api_key="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",)
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content":"You are a Virtual Assistant named Jarvis skilled in general tasks like Alexa and Google Cloud. Give short responses please."
+            },
+            {
+                "role": "user",
+                "content": command
+            }
+        ],
+        model="llama3-8b-8192",
+    )
+
+    return chat_completion.choices[0].message.content
+       
+
+
 
 def processCommand(c):
     # print(c)
@@ -32,7 +78,7 @@ def processCommand(c):
     
    
     elif "news" in c.lower():
-        print(f"{newsapi}")
+        # print(f"{newsapi}")
         r = requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}")
         if r.status_code == 200:
             # Parse the JSON response
@@ -44,9 +90,13 @@ def processCommand(c):
             # Print the headlines
             for article in articles:
                 speak(article['title'])
-
-
-        
+    
+    else:
+        # Let groq AI handle the request
+        output = aiCommand(c)
+        speak(output)
+     
+      
 
 if __name__ == "__main__":
     speak("Initializing Jarvis....")
@@ -68,7 +118,7 @@ if __name__ == "__main__":
                speak("Yeah")
                # Listen for word
                with sr.Microphone() as source:
-                   print("jarvis active")
+                   print("Jarvis Activated")
                    audio = r.listen(source)
                    command = r.recognize_google(audio)
 
