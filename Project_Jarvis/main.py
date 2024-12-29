@@ -109,7 +109,7 @@ if __name__ == "__main__":
         try:
            with sr.Microphone() as source:
              print("Listening....")
-             audio = r.listen(source, timeout=10, phrase_time_limit=5)
+             audio = r.listen(source, timeout=5, phrase_time_limit=5)
   
 
            word = r.recognize_google(audio)
