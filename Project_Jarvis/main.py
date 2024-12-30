@@ -5,6 +5,7 @@ import os
 import pygame
 import requests
 import musicLibrary
+import random
 from gtts import gTTS
 from groq import Groq
 
@@ -58,7 +59,10 @@ def aiCommand(command):
 
     return chat_completion.choices[0].message.content
        
-
+def terminateJarvis():
+    responses = ["You're welcome, sir.", "Pleasure helping you, sir."]
+    speak(random.choice(responses))
+    exit()
 
 
 def processCommand(c):
@@ -122,9 +126,13 @@ if __name__ == "__main__":
                    audio = r.listen(source)
                    command = r.recognize_google(audio)
 
+                   if "thank you jarvis" in command.lower():
+                       terminateJarvis()
+
                    processCommand(command)
 
+                   
         except Exception as e:
             print("Error; {0}".format(e))
     
-        
+       
