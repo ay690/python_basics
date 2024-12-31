@@ -5,7 +5,8 @@ import os
 import pygame
 import requests
 import musicLibrary
-import random
+# import random
+import pyautogui
 from gtts import gTTS
 from groq import Groq
 
@@ -60,8 +61,8 @@ def aiCommand(command):
     return chat_completion.choices[0].message.content
        
 def terminateJarvis():
-    responses = ["You're welcome, sir.", "Pleasure helping you, sir."]
-    speak(random.choice(responses))
+    response = "Pleasure helping you sir"
+    speak(response)
     exit()
 
 
@@ -79,8 +80,28 @@ def processCommand(c):
         song = c.lower().split(" ")[1]
         link = musicLibrary.music[song]
         webbrowser.open(link)
+
+    elif "volume up" in c.lower():
+        for _ in range(5):
+            pyautogui.press("up")
+        speak("Volume increased")
+
+    elif "volume down" in c.lower():
+        for _ in range(5):
+            pyautogui.press("down")
+
+        speak("Volume decreased")
     
-   
+    # elif "mute" in c.lower():
+    #     pyautogui.hotkey("alt", "tab")
+    #     pyautogui.press("m")
+    #     speak("Muted")
+
+    # elif "umute" in c.lower():
+    #     pyautogui.hotkey("alt", "tab")
+    #     pyautogui.press("m")
+    #     speak("Umuted")
+
     elif "news" in c.lower():
         # print(f"{newsapi}")
         r = requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}")
