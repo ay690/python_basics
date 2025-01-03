@@ -92,15 +92,15 @@ def processCommand(c):
 
         speak("Volume decreased")
     
-    # elif "mute" in c.lower():
-    #     pyautogui.hotkey("alt", "tab")
-    #     pyautogui.press("m")
-    #     speak("Muted")
+    elif "mute" in c.lower():
+        pyautogui.hotkey("alt", "tab")
+        pyautogui.press("m")
+        speak("Muted")
 
-    # elif "umute" in c.lower():
-    #     pyautogui.hotkey("alt", "tab")
-    #     pyautogui.press("m")
-    #     speak("Umuted")
+    elif "umute" in c.lower():
+        pyautogui.hotkey("alt", "tab")
+        pyautogui.press("m")
+        speak("Umuted")
 
     elif "news" in c.lower():
         # print(f"{newsapi}")
